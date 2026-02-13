@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will You Be My Valentine? 💕</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            background: white;
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+        }
+
+        h1 {
+            color: #e91e63;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .buttons {
+            margin-top: 30px;
+            position: relative;
+            height: 200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+
+        button {
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        #yesBtn {
+            background: #4caf50;
+            color: white;
+            position: relative;
+        }
+
+        #yesBtn:hover {
+            background: #45a049;
+            transform: scale(1.1);
+        }
+
+        #noBtn {
+            background: #f44336;
+            color: white;
+            position: absolute;
+            transition: all 0.3s ease;
+        }
+
+        #noBtn:hover {
+            background: #da190b;
+        }
+
+        .video-container {
+            display: none;
+            margin-top: 30px;
+        }
+
+        video {
+            width: 100%;
+            max-width: 500px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 1000;
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 30px;
+            animation: float 4s ease-in infinite;
+            opacity: 0;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .visible {
+            display: block !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="hearts" id="hearts"></div>
+    
+    <div class="container">
+        <div id="question">
+            <h1>Will you be my Valentine? 💝</h1>
+            <div class="buttons">
+                <button id="yesBtn">Kyllä, Kyllä, Kyllä!!</button>
+                <button id="noBtn">No en tod!!</button>
+            </div>
+        </div>
+
+        <div class="video-container" id="videoContainer">
+            <h1>Mä niin tiesin senkin hupsuliini! ❤️</h1>
+            <video id="video" controls autoplay>
+                <!-- Vaihda tämä oman videosi polkuun -->
+                <source src="RonjaValentine.mp4" type="video/mp4">
+                Selaimesi ei tue videota.
+            </video>
+        </div>
+    </div>
+
+    <script>
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yesBtn');
+        const question = document.getElementById('question');
+        const videoContainer = document.getElementById('videoContainer');
+        const heartsContainer = document.getElementById('hearts');
+
+        // Funktio "Ei"-napin liikuttamiseen
+        function moveNoButton() {
+            const container = document.querySelector('.buttons');
+            const containerRect = container.getBoundingClientRect();
+            
+            // Rajoita liike napin containerin sisälle
+            const maxX = containerRect.width - noBtn.offsetWidth - 40;
+            const maxY = containerRect.height - noBtn.offsetHeight - 40;
+            
+            const randomX = Math.random() * maxX;
+            const randomY = Math.random() * maxY;
+            
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+        }
+
+        // Funktio sydänten luomiseen
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + '%';
+            heart.style.animationDuration = (Math.random() * 2 + 3) + 's';
+            heart.style.animationDelay = Math.random() * 2 + 's';
+            heartsContainer.appendChild(heart);
+            
+            setTimeout(() => heart.remove(), 6000);
+        }
+
+        // Liikuta "Ei"-nappia kun sitä klikataan tai kosketaan
+        noBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            moveNoButton();
+        });
+        
+        noBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            moveNoButton();
+        });
+
+        // "Kyllä"-nappi näyttää videon
+        yesBtn.addEventListener('click', () => {
+            question.classList.add('hidden');
+            videoContainer.classList.add('visible');
+            
+            // Luo sydämiä
+            for (let i = 0; i < 20; i++) {
+                setTimeout(createHeart, i * 200);
+            }
+        });
+
+        // Aseta "Ei"-nappi alkuasentoon
+        moveNoButton();
+    </script>
+</body>
+</html>
